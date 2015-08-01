@@ -14,6 +14,16 @@ from sklearn.preprocessing import Imputer
 
 import pandas as pd
 
+def build_classifiers():
+    ESTIMATORS = {
+        #"sgd": SGDClassifier(loss="modified_huber", penalty="elasticnet", n_iter=20000, class_weight='auto', alpha=0.1, epsilon=0.01),
+        #"Extra trees": ExtraTreesClassifier(n_estimators=3000, max_depth=None, min_samples_leaf=1, random_state=0),
+        "Logistic regression": LogisticRegression(),
+        "Random forest": RandomForestRegressor(n_estimators=400, n_jobs=-1),
+        }
+
+    return ESTIMATORS
+
 ''''
 trainFilename = '/home/dario/Dropbox/Datasets/KDDcup98/cup98LRN.txt'
 file_io = open(trainFilename, 'r')
@@ -171,16 +181,6 @@ final_selected_features = feature_ranking.index[[range(0,30)]].values
 
 final_train_data = cleaned_data[final_selected_features]
 print "Data-set shape: {}".format(final_train_data.shape)
-
-def build_classifiers():
-    ESTIMATORS = {
-        #"sgd": SGDClassifier(loss="modified_huber", penalty="elasticnet", n_iter=20000, class_weight='auto', alpha=0.1, epsilon=0.01),
-        #"Extra trees": ExtraTreesClassifier(n_estimators=3000, max_depth=None, min_samples_leaf=1, random_state=0),
-        "Logistic regression": LogisticRegression(),
-        "Random forest": RandomForestRegressor(n_estimators=400, n_jobs=-1),
-        }
-
-    return ESTIMATORS
 
 
 # Binary classification
