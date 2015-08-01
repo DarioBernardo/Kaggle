@@ -55,7 +55,7 @@ def build_xgboost_regressor(X_test, X_train_full, y_train_full):
     plst = list(params.items())
     num_rounds = 10000
     # Using 4000 rows for early stopping.
-    offset = 4000
+    offset = int(len(X_train_full) * 0.2)
     # Construct Training matrix and early stopping matrix
     xgtrain = xgb.DMatrix(X_train_full[offset:, :], label=y_train_full[offset:])
     xgval = xgb.DMatrix(X_train_full[:offset, :], label=y_train_full[:offset])
@@ -85,9 +85,9 @@ def build_sgd_regressor(X_test, X_train_full, y_train_full):
 
 def build_regressors():
     ESTIMATORS = {
-        "sgd": build_sgd_regressor(),
-        "xgboost": build_xgboost_regressor(),
-        "Random forest":  build_random_forest_regressor(),
+        #"sgd": build_sgd_regressor,
+        "xgboost": build_xgboost_regressor,
+        "Random forest":  build_random_forest_regressor,
         }
 
     return ESTIMATORS
@@ -200,6 +200,8 @@ hold_out = pd.DataFrame(imp.transform(hold_out), columns=train.columns)
 
 print "Data-set shape: {}".format(cleaned_data.shape)
 
+'''
+# Feature selection using random forest
 print "building random forest..."
 rf = RandomForestRegressor(n_estimators=400, verbose=True, n_jobs=-1)
 rf.fit(cleaned_data, target_d)
@@ -208,22 +210,20 @@ importance = rf.feature_importances_
 feature_ranking = pd.Series(importance, index=cleaned_data.columns)
 feature_ranking.sort(ascending=False)
 print "Feature importance:"
-'''
-for index in range(0, len(importance)):
-    print("{} -> {}".format(column_names[index], importance[index]))
-'''
 
 print feature_ranking
 
 # Reduce the feature to 30
 final_selected_features = feature_ranking.index[[range(0, no_features_after_feat_selection_2)]].values
+'''
+final_selected_features = cleaned_data.columns
 
 final_train_data =  np.array(cleaned_data[final_selected_features])
 target_b = np.array(target_b)
 
 print "Data-set shape: {}".format(final_train_data.shape)
 
-
+'''
 # Binary classification
 estimators = build_classifiers()
 estimators_names = estimators.keys()
@@ -258,13 +258,14 @@ for name, estimator in estimators.items():
     hold_out_auc_score = roc_auc_score(hold_out_target_b, [x[1] for x in hold_out_probas])
     print "AUC score for {} on hold out data is: {}".format(name, index, hold_out_auc_score)
 
-
+'''
 
 
 
 
 
 # Continuous target
+target_d = np.array(target_d)
 estimators = build_regressors()
 estimators_names = estimators.keys()
 n_folds = 5
@@ -278,8 +279,8 @@ for train_indices, test_indices in cv:
     for name, estimator in estimators.items():
         #print "I am trying to build a {}".format(name)
         y_out = estimator(X_test, X_train, y_train)
-        gini = normalized_gini(y_test, y_out)
-        print "GINI score for {} on fold {} is: {}".format(name, index, gini)
+        estimator_gini = normalized_gini(y_test, y_out)
+        print "GINI score for {} on fold {} is: {}".format(name, index, estimator_gini)
         results[name][index] = gini
 
     index += 1
@@ -294,6 +295,6 @@ for estimator in estimators_names:
 for name, estimator in estimators.items():
     #print "I am trying to build a {}".format(name)
     y_out = estimator(hold_out[final_selected_features], final_train_data, target_d)
-    gini = normalized_gini(hold_out_target_d, y_out)
+    estimator_gini = normalized_gini(hold_out_target_d, y_out)
 
-    print "GINI score for {} on hold out data is: {}".format(name, index, gini)
+    print "GINI score for {} on hold out data is: {}".format(name, index, estimator_gini)
