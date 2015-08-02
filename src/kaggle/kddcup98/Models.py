@@ -15,11 +15,11 @@ import pandas as pd
 
 
 def gini(solution, submission):
-    df = sorted(zip(solution, submission),
+    sorted_df = sorted(zip(solution, submission),
                 key=lambda x: x[1], reverse=True)
-    random = [float(i+1)/float(len(df)) for i in range(len(df))]
-    totalPos = np.sum([x[0] for x in df])
-    cumPosFound = np.cumsum([x[0] for x in df])
+    random = [float(i+1)/float(len(sorted_df)) for i in range(len(sorted_df))]
+    totalPos = np.sum([x[0] for x in sorted_df])
+    cumPosFound = np.cumsum([x[0] for x in sorted_df])
     Lorentz = [float(x)/totalPos for x in cumPosFound]
     Gini = [l - r for l, r in zip(Lorentz, random)]
     return np.sum(Gini)
@@ -87,7 +87,7 @@ def build_regressors():
     ESTIMATORS = {
         #"sgd": build_sgd_regressor,
         "xgboost": build_xgboost_regressor,
-        "Random forest":  build_random_forest_regressor,
+        #"Random forest":  build_random_forest_regressor,
         }
 
     return ESTIMATORS
@@ -117,9 +117,9 @@ for i in range(0,10):
 # DATA PREPARATION VARIABLES
 
 
-sampling_percentage = 0.1
-no_features_after_feat_selection_1 = 40
-no_features_after_feat_selection_2 = 30
+sampling_percentage = 0.4
+no_features_after_feat_selection_1 = 80
+no_features_after_feat_selection_2 = 60
 
 
 #using error_bad_lines=False will cause the offending lines to be skipped
@@ -256,7 +256,7 @@ for name, estimator in estimators.items():
     #print "I am trying to build a {}".format(name)
     hold_out_probas = estimator.fit(final_train_data, target_b).predict_proba(hold_out[final_selected_features])
     hold_out_auc_score = roc_auc_score(hold_out_target_b, [x[1] for x in hold_out_probas])
-    print "AUC score for {} on hold out data is: {}".format(name, index, hold_out_auc_score)
+    print "AUC score for {} on hold out data is: {}".format(name, hold_out_auc_score)
 
 '''
 
@@ -281,7 +281,7 @@ for train_indices, test_indices in cv:
         y_out = estimator(X_test, X_train, y_train)
         estimator_gini = normalized_gini(y_test, y_out)
         print "GINI score for {} on fold {} is: {}".format(name, index, estimator_gini)
-        results[name][index] = gini
+        results[name][index] = estimator_gini
 
     index += 1
 
@@ -297,4 +297,4 @@ for name, estimator in estimators.items():
     y_out = estimator(hold_out[final_selected_features], final_train_data, target_d)
     estimator_gini = normalized_gini(hold_out_target_d, y_out)
 
-    print "GINI score for {} on hold out data is: {}".format(name, index, estimator_gini)
+    print "GINI score for {} on hold out data is: {}".format(name, estimator_gini)
