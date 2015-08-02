@@ -13,6 +13,7 @@ from sklearn.preprocessing import Imputer
 
 import pandas as pd
 
+############################------------------- UTILITY FUNCTIONS ------------------------#################################
 
 def gini(solution, submission):
     sorted_df = sorted(zip(solution, submission),
@@ -87,39 +88,19 @@ def build_regressors():
     ESTIMATORS = {
         #"sgd": build_sgd_regressor,
         "xgboost": build_xgboost_regressor,
-        #"Random forest":  build_random_forest_regressor,
+        "Random forest":  build_random_forest_regressor,
         }
 
     return ESTIMATORS
 
-
-''''
-trainFilename = '/home/dario/Dropbox/Datasets/KDDcup98/cup98LRN.txt'
-file_io = open(trainFilename, 'r')
-csvData = csv.reader(file_io, delimiter=',')
-header = csvData.next()
-file_io.close()
-
-print("\nHeader = {}\n".format(header))
-
-
-#create the training & test sets, skipping the header row with [1:]
-dataSet = genfromtxt(open(trainFilename, 'r'), delimiter=',', dtype=None)[1:]
-print("\nData dimension = {}\n".format(dataSet.shape))
-
-for i in range(0,10):
-    print dataSet[i]
-
-
-'''
+############################-------------------------------------------#################################
 
 
 # DATA PREPARATION VARIABLES
-
-
-sampling_percentage = 0.4
-no_features_after_feat_selection_1 = 80
-no_features_after_feat_selection_2 = 60
+sampling_percentage = 0.6   # This is how much data (in percentage) we are going to use for training and cross validation.
+                            # The remaining will be used at the end for validation as hold out data. We have enough data to do that.
+no_features_after_feat_selection_1 = 120     # No. of features after correlation feature selection
+no_features_after_feat_selection_2 = 80     # No. of features after random forest based features selection.
 
 
 #using error_bad_lines=False will cause the offending lines to be skipped
@@ -200,7 +181,6 @@ hold_out = pd.DataFrame(imp.transform(hold_out), columns=train.columns)
 
 print "Data-set shape: {}".format(cleaned_data.shape)
 
-'''
 # Feature selection using random forest
 print "building random forest..."
 rf = RandomForestRegressor(n_estimators=400, verbose=True, n_jobs=-1)
@@ -213,10 +193,8 @@ print "Feature importance:"
 
 print feature_ranking
 
-# Reduce the feature to 30
+# Reduce the feature
 final_selected_features = feature_ranking.index[[range(0, no_features_after_feat_selection_2)]].values
-'''
-final_selected_features = cleaned_data.columns
 
 final_train_data =  np.array(cleaned_data[final_selected_features])
 target_b = np.array(target_b)
