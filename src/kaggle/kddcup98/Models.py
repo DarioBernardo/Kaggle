@@ -71,7 +71,7 @@ def build_random_forest_regressor(X_test, X_train_full, y_train_full):
 
     #print "Building random forest regressor..."
 
-    rf = RandomForestRegressor(n_estimators=800)
+    rf = RandomForestRegressor(n_estimators=800, n_jobs=-1)
     probas_rf = rf.fit(X_train_full, y_train_full).predict(X_test)
     return probas_rf
 
@@ -100,7 +100,7 @@ def build_regressors():
 sampling_percentage = 0.6   # This is how much data (in percentage) we are going to use for training and cross validation.
                             # The remaining will be used at the end for validation as hold out data. We have enough data to do that.
 no_features_after_feat_selection_1 = 120     # No. of features after correlation feature selection
-no_features_after_feat_selection_2 = 80     # No. of features after random forest based features selection.
+no_features_after_feat_selection_2 = 70     # No. of features after random forest based features selection.
 
 
 #using error_bad_lines=False will cause the offending lines to be skipped
@@ -201,7 +201,7 @@ target_b = np.array(target_b)
 
 print "Data-set shape: {}".format(final_train_data.shape)
 
-'''
+
 # Binary classification
 estimators = build_classifiers()
 estimators_names = estimators.keys()
@@ -236,12 +236,11 @@ for name, estimator in estimators.items():
     hold_out_auc_score = roc_auc_score(hold_out_target_b, [x[1] for x in hold_out_probas])
     print "AUC score for {} on hold out data is: {}".format(name, hold_out_auc_score)
 
+
+
+
+
 '''
-
-
-
-
-
 # Continuous target
 target_d = np.array(target_d)
 estimators = build_regressors()
@@ -276,3 +275,4 @@ for name, estimator in estimators.items():
     estimator_gini = normalized_gini(hold_out_target_d, y_out)
 
     print "GINI score for {} on hold out data is: {}".format(name, estimator_gini)
+'''
