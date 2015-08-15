@@ -136,8 +136,8 @@ def run_cross_validation(train,labels,test,estimators):
 
 
 #load train and test
-train = pd.read_csv('/home/dario/LogicalGlueDatasets/Liberty_Mutual_group_hazard_prediction/train.csv', index_col=0)
-test = pd.read_csv('/home/dario/LogicalGlueDatasets/Liberty_Mutual_group_hazard_prediction/test.csv', index_col=0)
+train = pd.read_csv('~/Datasets/Liberty_Mutual_group_hazard_prediction/train.csv', index_col=0)
+test = pd.read_csv('~/Datasets/Liberty_Mutual_group_hazard_prediction/test.csv', index_col=0)
 
 labels = train.Hazard
 train.drop('Hazard', axis=1, inplace=True)
