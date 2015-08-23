@@ -33,5 +33,7 @@ cursor.close()
 
 plt.pcolor(data,cmap=plt.cm.Reds)
 
+plt.ylabel('outbound departure time')
+plt.xlabel('inbound departure time')
 plt.show()
 plt.close()
