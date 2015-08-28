@@ -2,23 +2,12 @@ from sklearn.feature_extraction import DictVectorizer
 
 __author__ = 'dario'
 
-'''
-This benchmark uses xgboost and early stopping to achieve a score of 0.38019
-In the liberty mutual group: property inspection challenge
 
-Based on Abhishek Catapillar benchmark
-https://www.kaggle.com/abhishek/caterpillar-tube-pricing/beating-the-benchmark-v1-0
-
-@author Devin
-
-Have fun;)
-'''
 
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
 import xgboost as xgb
-import regression.DataTransformer as dt
 from sklearn import cross_validation
 
 def gini(solution, submission):
@@ -86,8 +75,8 @@ def xgboost_pred(train,labels,test):
 
 
 #load train and test
-train = pd.read_csv('/home/dario/LogicalGlueDatasets/Liberty_Mutual_group_hazard_prediction/train.csv', index_col=0)
-test = pd.read_csv('/home/dario/LogicalGlueDatasets/Liberty_Mutual_group_hazard_prediction/test.csv', index_col=0)
+train = pd.read_csv('/home/dario/Datasets/Liberty_Mutual_group_hazard_prediction/train.csv', index_col=0)
+test = pd.read_csv('/home/dario/Datasets/Liberty_Mutual_group_hazard_prediction/test.csv', index_col=0)
 
 labels = train.Hazard
 train.drop('Hazard', axis=1, inplace=True)

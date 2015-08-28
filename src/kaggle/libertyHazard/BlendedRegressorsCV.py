@@ -1,20 +1,8 @@
 
 __author__ = 'dario'
 
-'''
-This benchmark uses xgboost and early stopping to achieve a score of 0.38019
-In the liberty mutual group: property inspection challenge
-
-Based on Abhishek Catapillar benchmark
-https://www.kaggle.com/abhishek/caterpillar-tube-pricing/beating-the-benchmark-v1-0
-
-@author Devin
-
-Have fun;)
-'''
 
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
-from sklearn.feature_extraction import DictVectorizer
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing, linear_model
